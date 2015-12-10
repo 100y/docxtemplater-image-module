@@ -10,6 +10,8 @@ fileNames=[
 	'qrExample.docx',
 	'noImage.docx',
 	'qrExample2.docx',
+	'qrHeader.docx',
+	'qrHeaderNoImage.docx',
 ]
 
 ImageModule=require('../js/index.js')
@@ -240,6 +242,72 @@ describe 'qrcode replacing',->
 			expect(images[1].asText().length).to.equal(826)
 			expect(images[2].asText().length).to.be.within(17417,17440)
 			expect(images[3].asText().length).to.be.within(7177,7181)
+
+	describe 'should work qr in headers without extra images',->
+		zip=null
+		before (done)->
+			name='qrHeaderNoImage.docx'
+
+			imageModule=new ImageModule({qrCode:true})
+
+			imageModule.getImageFromData=(imgData)->
+				d=fs.readFileSync('examples/'+imgData,'binary')
+				d
+
+			imageModule.finished=()->
+				zip=docX[name].getZip()
+				buffer=zip.generate({type:"nodebuffer"})
+				fs.writeFile("test_qr_header_no_image.docx",buffer)
+				done()
+
+
+			docX[name]=docX[name]
+				.load(docX[name].loadedContent)
+				.setData({image:'image',image2:'image2.png'})
+
+			docX[name].attachModule(imageModule)
+
+			docX[name]
+				.render()
+
+		it 'should work in a header too',->
+			images=zip.file(/media\/.*.png/)
+			expect(images.length).to.equal(2)
+			expect(images[0].asText().length).to.equal(826)
+			expect(images[1].asText().length).to.be.within(17417,17440)
+
+	describe 'should work qr in headers with extra images',->
+		zip=null
+		before (done)->
+			name='qrHeader.docx'
+
+			imageModule=new ImageModule({qrCode:true})
+
+			imageModule.getImageFromData=(imgData)->
+				d=fs.readFileSync('examples/'+imgData,'binary')
+				d
+
+			imageModule.finished=()->
+				zip=docX[name].getZip()
+				buffer=zip.generate({type:"nodebuffer"})
+				fs.writeFile("test_qr_header.docx",buffer)
+				done()
+
+
+			docX[name]=docX[name]
+				.load(docX[name].loadedContent)
+				.setData({image:'image',image2:'image2.png'})
+
+			docX[name].attachModule(imageModule)
+
+			docX[name]
+				.render()
+
+		it 'should work in a header too',->
+			images=zip.file(/media\/.*.png/)
+			expect(images.length).to.equal(2)
+			expect(images[0].asText().length).to.equal(826)
+			expect(images[1].asText().length).to.be.within(17417,17440)
 
 	describe 'should work without images (it should call finished())',()->
 		d=null
