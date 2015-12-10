@@ -272,9 +272,10 @@ describe 'qrcode replacing',->
 
 		it 'should work in a header too',->
 			images=zip.file(/media\/.*.png/)
-			expect(images.length).to.equal(2)
+			expect(images.length).to.equal(3)
 			expect(images[0].asText().length).to.equal(826)
-			expect(images[1].asText().length).to.be.within(17417,17440)
+			expect(images[1].asText().length).to.equal(12888)
+			expect(images[2].asText().length).to.be.within(17417,17440)
 
 	describe 'should work qr in headers with extra images',->
 		zip=null
@@ -305,9 +306,10 @@ describe 'qrcode replacing',->
 
 		it 'should work in a header too',->
 			images=zip.file(/media\/.*.png/)
-			expect(images.length).to.equal(2)
+			expect(images.length).to.equal(3)
 			expect(images[0].asText().length).to.equal(826)
-			expect(images[1].asText().length).to.be.within(17417,17440)
+			expect(images[1].asText().length).to.equal(12888)
+			expect(images[2].asText().length).to.be.within(17417,17440)
 
 	describe 'should work without images (it should call finished())',()->
 		d=null
